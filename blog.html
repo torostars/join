@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'><rect width='100' height='100' fill='%23050510'/><path d='M20,30 L50,10 L80,30 L65,30 L65,70 L35,70 L35,30 Z' fill='%23ff00c8'/><circle cx='50' cy='40' r='10' fill='%2300ffff'/></svg>">
+<title>Neon Runner Dash — Blog</title>
+<meta name="description" content="Neon Runner Dash is a playful, responsive game site with a fast canvas runner.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #ff00c8;
+  --secondary: #00ffff;
+  --dark: #0a0a1a;
+  --darker: #050510;
+  --light: #ccd0ff;
+  --accent: #9d00ff;
+  --card-bg: rgba(20, 10, 40, 0.7);
+  --text: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: linear-gradient(to bottom, var(--darker), var(--dark));
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Navigation */
+.nav {
+  background-color: rgba(10, 10, 26, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--accent);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.logo span {
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.menu {
+  display: flex;
+  gap: 20px;
+}
+
+.menu a {
+  color: var(--light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.menu a:hover {
+  color: var(--secondary);
+}
+
+.menu a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.menu a:hover::after {
+  width: 100%;
+}
+
+.right {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.btn {
+  padding: 8px 20px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn.ghost:hover {
+  background: var(--primary);
+  color: var(--dark);
+}
+
+.btn {
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  color: var(--dark);
+  border: none;
+  font-weight: 700;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--primary);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(to bottom, rgba(5, 5, 16, 0.8), rgba(10, 10, 26, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="%23050510"/><circle cx="20" cy="20" r="2" fill="%23ff00c8" opacity="0.5"/><circle cx="50" cy="30" r="1" fill="%2300ffff" opacity="0.5"/><circle cx="80" cy="20" r="1.5" fill="%239d00ff" opacity="0.5"/><circle cx="10" cy="60" r="1" fill="%2300ffff" opacity="0.5"/><circle cx="40" cy="70" r="2" fill="%23ff00c8" opacity="0.5"/><circle cx="70" cy="80" r="1.5" fill="%239d00ff" opacity="0.5"/></svg>');
+  padding: 80px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, var(--accent) 0%, transparent 50%);
+  opacity: 0.1;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(157, 0, 255, 0.5);
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: var(--light);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Blog Section */
+.section {
+  padding: 60px 0;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 25px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  padding: 2px;
+  background: linear-gradient(to bottom, var(--primary), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(157, 0, 255, 0.2);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.blog-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.meta {
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.excerpt {
+  margin-bottom: 20px;
+  color: var(--light);
+}
+
+.read {
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+/* Expanded Article View */
+.article-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 5, 16, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.article-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.article-content {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 40px rgba(157, 0, 255, 0.3);
+}
+
+.article-content h2 {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.article-meta {
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+.article-body {
+  color: var(--light);
+  line-height: 1.8;
+}
+
+.article-body p {
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--primary);
+  color: var(--dark);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: rotate(90deg);
+  box-shadow: 0 0 15px var(--primary);
+}
+
+/* Footer */
+.footer {
+  background-color: var(--darker);
+  padding: 30px 0;
+  margin-top: auto;
+  border-top: 1px solid var(--accent);
+}
+
+.badge {
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--dark);
+    padding: 20px;
+    border-top: 1px solid var(--accent);
+  }
+  
+  .menu.active {
+    display: flex;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .blog-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .article-content {
+    padding: 25px;
+    width: 95%;
+  }
+  
+  .article-content h2 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Toggle button for mobile */
+[data-nav-toggle] {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  [data-nav-toggle] {
+    display: inline-block;
+  }
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="logo" href="index.html" aria-label="Home"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='40' height='40'><rect width='100' height='100' fill='%23050510'/><path d='M20,30 L50,10 L80,30 L65,30 L65,70 L35,70 L35,30 Z' fill='%23ff00c8'/><circle cx='50' cy='40' r='10' fill='%2300ffff'/></svg>" alt="Neon Runner Dash icon"><span>Neon Runner Dash</span></a>
+    <div class="menu" id="nav-menu">
+      <a href="index.html">Home</a>
+      <a href="game.html">Play Game</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="about.html">About</a>
+      <a href="blog.html" style="color:var(--secondary);font-weight:700">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="right"><a class="btn ghost" id="nav-toggle">Menu</a><a class="btn" href="game.html">Play</a></div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <h1>Blog</h1>
+    <p>Short reads on making better web games.</p>
+  </div>
+</header>
+
+<section class="section container">
+  <div class="blog-grid">
+    <div class="card blog-card" data-article="1">
+      <h3>Why Runner Games Work So Well</h3>
+      <div class="meta">Quick loops, readable rules, instant retry—perfect for browsers.</div>
+      <p class="excerpt">Quick loops, readable rules, instant retry—perfect for browsers. We break down practical patterns you can apply today: controls, layout, and performance.</p>
+      <div class="btn ghost read">Read article</div>
+    </div>
+    
+    <div class="card blog-card" data-article="2">
+      <h3>Mobile‑First Design for Web Games</h3>
+      <div class="meta">Design decisions that keep touch play smooth and fair.</div>
+      <p class="excerpt">Design decisions that keep touch play smooth and fair. We break down practical patterns you can apply today: controls, layout, and performance.</p>
+      <div class="btn ghost read">Read article</div>
+    </div>
+    
+    <div class="card blog-card" data-article="3">
+      <h3>Designing Fair Difficulty Curves</h3>
+      <div class="meta">Challenge without cheap shots keeps players learning.</div>
+      <p class="excerpt">Challenge without cheap shots keeps players learning. We break down practical patterns you can apply today: controls, layout, and performance.</p>
+      <div class="btn ghost read">Read article</div>
+    </div>
+    
+    <div class="card blog-card" data-article="4">
+      <h3>Sound & Feedback That Feel Good</h3>
+      <div class="meta">Small audio and visual cues make actions satisfying.</div>
+      <p class="excerpt">Small audio and visual cues make actions satisfying. We break down practical patterns you can apply today: controls, layout, and performance.</p>
+      <div class="btn ghost read">Read article</div>
+    </div>
+    
+    <div class="card blog-card" data-article="5">
+      <h3>Optimizing Session Length</h3>
+      <div class="meta">Make it easy to leave—and even easier to come back.</div>
+      <p class="excerpt">Make it easy to leave—and even easier to come back. We break down practical patterns you can apply today: controls, layout, and performance.</p>
+      <div class="btn ghost read">Read article</div>
+    </div>
+    
+    <div class="card blog-card" data-article="6">
+      <h3>Retro Vibes, Modern Speed</h3>
+      <div class="meta">Old-school aesthetics with fast, modern code.</div>
+      <p class="excerpt">Old-school aesthetics with fast, modern code. We break down practical patterns you can apply today: controls, layout, and performance.</p>
+      <div class="btn ghost read">Read article</div>
+    </div>
+  </div>
+</section>
+
+<!-- Article Overlay -->
+<div class="article-overlay" id="article-overlay">
+  <div class="article-content">
+    <div class="close-btn" id="close-article">×</div>
+    <h2 id="article-title">Why Runner Games Work So Well</h2>
+    <div class="article-meta" id="article-meta">Quick loops, readable rules, instant retry—perfect for browsers.</div>
+    <div class="article-body" id="article-body">
+      <p>Runner games have become a staple in the world of web and mobile gaming, and for good reason. Their design principles align perfectly with how people interact with browsers and mobile devices.</p>
+      
+      <p>The core loop of a runner game is simple: you run, you jump, you avoid obstacles. This simplicity makes it immediately accessible to players of all skill levels. There's no complex backstory to understand or intricate controls to master. Within seconds, anyone can grasp the basic mechanics and start playing.</p>
+      
+      <p>This instant accessibility is crucial for web games where attention spans are short. Players often arrive at a game page through a social media link or casual browsing. If they can't understand what to do within the first few seconds, they'll likely move on.</p>
+      
+      <p>Another strength of runner games is their perfect match for touch interfaces. The simple tap-to-jump or swipe-to-move controls feel natural on mobile devices. This has contributed significantly to their popularity in the mobile gaming market.</p>
+      
+      <p>The "just one more try" factor is perhaps the most powerful aspect of runner games. When you fail, you can immediately restart and try again. This quick reset cycle taps into our natural desire to improve and master challenges. Each attempt feels like progress, even if your score doesn't immediately reflect it.</p>
+      
+      <p>From a technical perspective, runner games are well-suited to web browsers. They typically use limited assets that load quickly, and their gameplay mechanics don't require complex physics engines or AI systems. This makes them perform well even on lower-end devices and slower connections.</p>
+      
+      <p>For developers, runner games offer a great framework to experiment with game design concepts. The basic structure provides a solid foundation to build upon, whether you're adding power-ups, changing environments, or introducing new mechanics.</p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div>© 2025 Neon Runner Dash. All rights reserved.</div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <span class="badge">Responsive • Age-gate</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const navToggle = document.getElementById('nav-toggle');
+  const navMenu = document.getElementById('nav-menu');
+  const articleOverlay = document.getElementById('article-overlay');
+  const closeArticle = document.getElementById('close-article');
+  const articleTitle = document.getElementById('article-title');
+  const articleMeta = document.getElementById('article-meta');
+  const articleBody = document.getElementById('article-body');
+  
+  // Mobile menu toggle
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', function() {
+      navMenu.classList.toggle('active');
+    });
+  }
+  
+  // Article data
+  const articles = {
+    1: {
+      title: "Why Runner Games Work So Well",
+      meta: "Quick loops, readable rules, instant retry—perfect for browsers.",
+      content: `<p>Runner games have become a staple in the world of web and mobile gaming, and for good reason. Their design principles align perfectly with how people interact with browsers and mobile devices.</p>
+      
+      <p>The core loop of a runner game is simple: you run, you jump, you avoid obstacles. This simplicity makes it immediately accessible to players of all skill levels. There's no complex backstory to understand or intricate controls to master. Within seconds, anyone can grasp the basic mechanics and start playing.</p>
+      
+      <p>This instant accessibility is crucial for web games where attention spans are short. Players often arrive at a game page through a social media link or casual browsing. If they can't understand what to do within the first few seconds, they'll likely move on.</p>
+      
+      <p>Another strength of runner games is their perfect match for touch interfaces. The simple tap-to-jump or swipe-to-move controls feel natural on mobile devices. This has contributed significantly to their popularity in the mobile gaming market.</p>
+      
+      <p>The "just one more try" factor is perhaps the most powerful aspect of runner games. When you fail, you can immediately restart and try again. This quick reset cycle taps into our natural desire to improve and master challenges. Each attempt feels like progress, even if your score doesn't immediately reflect it.</p>
+      
+      <p>From a technical perspective, runner games are well-suited to web browsers. They typically use limited assets that load quickly, and their gameplay mechanics don't require complex physics engines or AI systems. This makes them perform well even on lower-end devices and slower connections.</p>
+      
+      <p>For developers, runner games offer a great framework to experiment with game design concepts. The basic structure provides a solid foundation to build upon, whether you're adding power-ups, changing environments, or introducing new mechanics.</p>`
+    },
+    2: {
+      title: "Mobile‑First Design for Web Games",
+      meta: "Design decisions that keep touch play smooth and fair.",
+      content: `<p>In today's gaming landscape, mobile-first design isn't just an option—it's a necessity. With the majority of web traffic coming from mobile devices, your game needs to provide an exceptional experience on smaller screens.</p>
+      
+      <p>The first consideration for mobile game design is touch controls. Fingers are less precise than mice, so interactive elements need to be large enough to tap comfortably. The recommended minimum touch target size is 44x44 pixels. This ensures that buttons and controls are easy to press without accidental taps on adjacent elements.</p>
+      
+      <p>Placement of controls is equally important. For right-handed players (approximately 90% of the population), the bottom-right corner of the screen is the most comfortable area for frequent interactions. Consider placing primary actions here, while secondary actions can go on the left side or top of the screen.</p>
+      
+      <p>Performance is another critical factor. Mobile devices have less processing power and memory than desktop computers. Optimize your assets, minimize JavaScript execution time, and use efficient rendering techniques. Canvas-based games often perform better than DOM-based games on mobile devices.</p>
+      
+      <p>Battery life is a concern for mobile users. Avoid constant animations when the game is idle, and provide options to reduce frame rate or visual effects for longer play sessions.</p>
+      
+      <p>Don't forget about different screen sizes and aspect ratios. Test your game on various devices to ensure important UI elements aren't hidden by device notches or software navigation bars.</p>
+      
+      <p>Finally, consider the mobile context. Players might be in situations where they need to quickly pause or mute the game. Make these controls easily accessible at all times.</p>`
+    },
+    3: {
+      title: "Designing Fair Difficulty Curves",
+      meta: "Challenge without cheap shots keeps players learning.",
+      content: `<p>A well-designed difficulty curve is what separates engaging games from frustrating ones. The goal is to challenge players enough to keep them interested, without making them feel the game is unfair.</p>
+      
+      <p>Start by introducing mechanics gradually. Don't overwhelm new players with all the game's systems at once. Introduce one concept at a time, let players master it, then add another layer of complexity. This progressive introduction helps build player confidence and skills.</p>
+      
+      <p>The early stages of your game should be forgiving. Allow players to make mistakes without severe punishment. This doesn't mean the game should be without challenge, but failure should feel like a learning experience rather than a punishment.</p>
+      
+      <p>As players progress, gradually increase the difficulty. This can be done by introducing new obstacles, increasing speed, or combining challenges in new ways. The key is to make the increase feel natural and proportional to the player's growing skills.</p>
+      
+      <p>Avoid "cheap" difficulty increases that don't respect player effort. Simply making enemies have more health or deal more damage often feels artificial and frustrating. Instead, create difficulty through interesting combinations of mechanics that test player mastery.</p>
+      
+      <p>Provide optional challenges for skilled players. These can be hidden paths, collectibles, or achievement systems that reward mastery without punishing less experienced players.</p>
+      
+      <p>Implement dynamic difficulty adjustment when appropriate. If a player is struggling, consider subtly making the game easier. Conversely, if a player is breezing through content, you can increase the challenge to maintain engagement.</p>
+      
+      <p>Finally, always playtest your difficulty curve with players of different skill levels. What feels balanced to you as the developer might be too easy or too hard for your target audience.</p>`
+    },
+    4: {
+      title: "Sound & Feedback That Feel Good",
+      meta: "Small audio and visual cues make actions satisfying.",
+      content: `<p>Great game feel often comes down to the subtle details of feedback—both audio and visual. These elements transform mechanical interactions into satisfying experiences that players want to repeat.</p>
+      
+      <p>Visual feedback should be immediate and clear. When a player performs an action, the game should respond in a way that confirms the action was registered. This could be a character animation, particle effects, screen shake, or UI elements lighting up.</p>
+      
+      <p>For jumping mechanics, consider adding squash and stretch to the character, dust particles at takeoff and landing, and a slight camera follow to emphasize the height of the jump. These subtle effects make the jump feel weighty and satisfying.</p>
+      
+      <p>Sound design is equally important. Every significant action should have an appropriate sound effect. These sounds should be distinctive enough to provide information to the player—they can often tell what's happening in the game just by listening.</p>
+      
+      <p>Use audio feedback to indicate success and failure states. Positive actions should have pleasing, rewarding sounds, while negative events should have less pleasant but still satisfying audio cues.</p>
+      
+      <p>Consider implementing audio "ear candy"—sounds that aren't necessary for gameplay but add to the overall atmosphere. These can be ambient background sounds, musical stings during specific events, or subtle UI sounds.</p>
+      
+      <p>Haptic feedback on mobile devices can enhance the experience significantly. A subtle vibration when collecting items or performing special moves adds another layer of tactile feedback.</p>
+      
+      <p>Remember that less is often more. Too many sound effects or visual elements can create sensory overload. Each feedback element should have a purpose and not distract from the core gameplay.</p>`
+    },
+    5: {
+      title: "Optimizing Session Length",
+      meta: "Make it easy to leave—and even easier to come back.",
+      content: `<p>In the mobile and web gaming space, session length is a critical design consideration. Players often have short bursts of time available—waiting in line, during a commute, or between tasks. Designing for these short sessions can significantly improve player retention.</p>
+      
+      <p>The ideal web or mobile game allows for meaningful progress in sessions as short as 1-2 minutes. This doesn't mean the game should be shallow, but that it should be structured to accommodate short play sessions.</p>
+      
+      <p>Implement a save system that allows players to stop at any time without losing progress. For runner games, this might mean saving after each completed run or checkpoint.</p>
+      
+      <p>Consider implementing a "run" structure where each attempt is relatively short (1-3 minutes). This natural break point makes it easy for players to stop when they need to.</p>
+      
+      <p>Daily challenges or goals are excellent for encouraging regular short sessions. These limited-time objectives give players a reason to return each day, even if just for a few minutes.</p>
+      
+      <p>Make the game easy to resume. When players return after some time away, consider providing a brief recap of what they were doing or what new content is available.</p>
+      
+      <p>Avoid forcing players to engage in long sessions to make meaningful progress. If your game requires 30 minutes of continuous play to achieve anything significant, you'll lose players who only have shorter periods available.</p>
+      
+      <p>Finally, respect the player's time. Don't include unnecessarily long animations or unskippable dialogue that prolong sessions. Let players get into the action quickly when they want to.</p>`
+    },
+    6: {
+      title: "Retro Vibes, Modern Speed",
+      meta: "Old-school aesthetics with fast, modern code.",
+      content: `<p>The resurgence of retro aesthetics in games combines the nostalgic appeal of classic visuals with the technical advantages of modern development. This approach allows developers to create visually distinct games that perform excellently across devices.</p>
+      
+      <p>Pixel art remains popular for good reason—it's scalable, relatively easy to create, and evokes nostalgia for classic games. When using pixel art, consider your resolution carefully. A consistent pixel ratio throughout the game creates a cohesive look.</p>
+      
+      <p>Modern rendering techniques can enhance retro visuals. Shaders can add CRT scanlines, screen curvature, color bleeding, and other effects that mimic classic displays without the drawbacks of actual old hardware.</p>
+      
+      <p>While the visuals might be retro, the code shouldn't be. Use modern JavaScript frameworks and development practices to ensure your game runs smoothly. This includes using requestAnimationFrame for animations, WebGL for rendering when appropriate, and modern asset loading techniques.</p>
+      
+      <p>Retro-style games often benefit from chiptune or synthwave music. These audio styles complement the visual aesthetic and can be created with modern tools that offer more flexibility than historical hardware.</p>
+      
+      <p>Don't feel constrained by actual technical limitations of historical systems. The goal is to evoke a feeling, not to perfectly recreate outdated technology. Feel free to use particle effects, transparency, and other modern techniques that enhance the retro style.</p>
+      
+      <p>Consider your color palette carefully. Many classic games were limited to specific color palettes due to hardware constraints. You can use these limited palettes as inspiration while expanding where it benefits the visual design.</p>
+      
+      <p>Finally, remember that "retro" is an aesthetic choice, not an excuse for poor gameplay. The game mechanics should feel modern and polished, even if the visuals suggest otherwise.</p>`
+    }
+  };
+  
+  // Set up article card clicks
+  const blogCards = document.querySelectorAll('.blog-card');
+  blogCards.forEach(card => {
+    card.addEventListener('click', function() {
+      const articleId = this.getAttribute('data-article');
+      const article = articles[articleId];
+      
+      if (article) {
+        articleTitle.textContent = article.title;
+        articleMeta.textContent = article.meta;
+        articleBody.innerHTML = article.content;
+        articleOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+  
+  // Close article overlay
+  closeArticle.addEventListener('click', function() {
+    articleOverlay.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  });
+  
+  // Close article when clicking outside content
+  articleOverlay.addEventListener('click', function(e) {
+    if (e.target === articleOverlay) {
+      articleOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  });
+  
+  // Close article with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && articleOverlay.classList.contains('active')) {
+      articleOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  });
+});
+</script>
+</body>
+</html>
